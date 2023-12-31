@@ -25,6 +25,7 @@ const getVoices = () => {
     option.setAttribute("data-lang", voice.lang);
     option.setAttribute("data-name", voice.name);
     voiceSelect.appendChild(option);
+    option.style.fontSize = "0.9rem";
   });
 };
 
