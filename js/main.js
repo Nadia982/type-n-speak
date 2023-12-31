@@ -44,7 +44,7 @@ const speak = () => {
     }
     if(textInput.value !== ''){
         //Get text to speak
-        const speakText = newSpeechSynthesisUtterance(textInput.value);
+        const speakText = new SpeechSynthesisUtterance(textInput.value);
 
         //Speak end 
         speakText.onend = e => {
@@ -72,3 +72,18 @@ const speak = () => {
         synth.speak(speakText);
     }
 };
+
+//Event listeners
+// Text form submission
+textForm.addEventListener("submit", e => {
+    e.preventDefault();
+    speak();
+    textInput.blur();
+})
+
+// Rate value change
+rate.addEventListener("change", e=> rateValue.textContent = rate.value);
+pitch.addEventListener("change", e=> pitchValue.textContent = pitch.value);
+
+//Voice select change
+voiceSelect.addEventListener("change", e=> speak());
