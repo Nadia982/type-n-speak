@@ -34,3 +34,41 @@ getVoices();
 if (synth.onvoiceschanged !== undefined) {
   synth.onvoiceschanged = getVoices;
 }
+
+//Speak
+const speak = () => {
+    //Check if already speaking
+    if(synth.speaking){
+        console.error("Already speaking...")
+        return;
+    }
+    if(textInput.value !== ''){
+        //Get text to speak
+        const speakText = newSpeechSynthesisUtterance(textInput.value);
+
+        //Speak end 
+        speakText.onend = e => {
+            console.log("Finished speaking");
+        }
+        //Speak error
+        speakText.onerror = e => {
+            console.error("Something went wrong")
+        }
+        //Determining which voice to use to speak
+        const selectedVoice = voiceSelect.selectedOptions[0].getAttribute("data-name");
+        console.log(selectedVoice); 
+    
+        //loop through the voices and if the current iteration matches what we selected then use that voice
+        voices.forEach(voice => {
+            if(voice.name === selectedVoice){
+                speakText.voice = voice;
+            }
+        })
+
+        //Set pitch and rate
+        speakText.rate = rate.value;
+        speakText.pitch = pitch.value;
+        //Speak
+        synth.speak(speakText);
+    }
+};
