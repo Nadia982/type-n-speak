@@ -9,6 +9,7 @@ const rate = document.querySelector("#rate");
 const rateValue = document.querySelector("#rate-value");
 const pitch = document.querySelector("#pitch");
 const pitchValue = document.querySelector("#pitch-value");
+const body = document.querySelector("body");
 
 //Initialise the voices array
 let voices = [];
@@ -38,53 +39,60 @@ if (synth.onvoiceschanged !== undefined) {
 
 //Speak
 const speak = () => {
-    //Check if already speaking
-    if(synth.speaking){
-        console.error("Already speaking...")
-        return;
-    }
-    if(textInput.value !== ''){
-        //Get text to speak
-        const speakText = new SpeechSynthesisUtterance(textInput.value);
+  //Check if already speaking
+  if (synth.speaking) {
+    console.error("Already speaking...");
+    return;
+  }
+  if (textInput.value !== "") {
+    //Add background animation
+    body.style.background = "#040404 url(img/wave.gif)";
+    body.style.backgroundRepeat = "repeat-x";
+    body.style.backgroundSize = "100% 100%";
 
-        //Speak end 
-        speakText.onend = e => {
-            console.log("Finished speaking");
-        }
-        //Speak error
-        speakText.onerror = e => {
-            console.error("Something went wrong")
-        }
-        //Determining which voice to use to speak
-        const selectedVoice = voiceSelect.selectedOptions[0].getAttribute("data-name");
-        console.log(selectedVoice); 
-    
-        //loop through the voices and if the current iteration matches what we selected then use that voice
-        voices.forEach(voice => {
-            if(voice.name === selectedVoice){
-                speakText.voice = voice;
-            }
-        })
+    //Get text to speak
+    const speakText = new SpeechSynthesisUtterance(textInput.value);
 
-        //Set pitch and rate
-        speakText.rate = rate.value;
-        speakText.pitch = pitch.value;
-        //Speak
-        synth.speak(speakText);
-    }
+    //Speak end
+    speakText.onend = (e) => {
+      console.log("Finished speaking");
+      body.style.background = "#040404"
+    };
+    //Speak error
+    speakText.onerror = (e) => {
+      console.error("Something went wrong");
+    };
+    //Determining which voice to use to speak
+    const selectedVoice =
+      voiceSelect.selectedOptions[0].getAttribute("data-name");
+    console.log(selectedVoice);
+
+    //loop through the voices and if the current iteration matches what we selected then use that voice
+    voices.forEach((voice) => {
+      if (voice.name === selectedVoice) {
+        speakText.voice = voice;
+      }
+    });
+
+    //Set pitch and rate
+    speakText.rate = rate.value;
+    speakText.pitch = pitch.value;
+    //Speak
+    synth.speak(speakText);
+  }
 };
 
 //Event listeners
 // Text form submission
-textForm.addEventListener("submit", e => {
-    e.preventDefault();
-    speak();
-    textInput.blur();
-})
+textForm.addEventListener("submit", (e) => {
+  e.preventDefault();
+  speak();
+  textInput.blur();
+});
 
 // Rate value change
-rate.addEventListener("change", e=> rateValue.textContent = rate.value);
-pitch.addEventListener("change", e=> pitchValue.textContent = pitch.value);
+rate.addEventListener("change", (e) => (rateValue.textContent = rate.value));
+pitch.addEventListener("change", (e) => (pitchValue.textContent = pitch.value));
 
 //Voice select change
-voiceSelect.addEventListener("change", e=> speak());
+voiceSelect.addEventListener("change", (e) => speak());
